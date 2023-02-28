@@ -30,16 +30,39 @@ function ToDoList() {
 */
 
 function ToDoList() {
-  const { register, watch } = useForm();
-  // console.log(register("toDo"));
-  console.log(watch());
+  const { register, watch, handleSubmit, formState } = useForm();
+  const onValid = (data: any) => {
+    console.log(data);
+  };
+  console.log(formState.errors);
   return (
     <div>
-      <form>
-        <input {...register("Email")} placeholder="Email" />
-        <input {...register("Username")} placeholder="Username" />
-        <input {...register("Password")} placeholder="Password" />
-        <input {...register("Password1")} placeholder="Password1" />
+      <form
+        style={{ display: "flex", flexDirection: "column" }}
+        onSubmit={handleSubmit(onValid)}
+      >
+        <input
+          {...register("Email", { required: true, minLength: 10 })}
+          placeholder="Email"
+        />
+        <input
+          {...register("Username", { required: true })}
+          placeholder="Username"
+        />
+        <input
+          {...register("Password", { required: true, minLength: 5 })}
+          placeholder="Password"
+        />
+        <input
+          {...register("Password1", {
+            required: "Password required",
+            minLength: {
+              value: 5,
+              message: "This password Too short",
+            },
+          })}
+          placeholder="Password1"
+        />
         <button>Add</button>
       </form>
     </div>
