@@ -1,9 +1,10 @@
-import React from "react";
-import { useSetRecoilState } from "recoil";
-import { Categories, IToDo, toDoState } from "../states";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Categories, categoriesState, IToDo, toDoState } from "../states";
 
 function ToDo({ text, category, id }: IToDo) {
   const setToDos = useSetRecoilState(toDoState);
+  const categories = useRecoilValue(categoriesState);
+
   const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const {
       currentTarget: { name },
@@ -18,24 +19,29 @@ function ToDo({ text, category, id }: IToDo) {
       ];
     });
   };
+  const delToDo = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const item = event.currentTarget.parentNode;
+    const text = item?.children[0].textContent;
+    setToDos((oldToDos) => {
+      const targetIdx = oldToDos.findIndex((toDo) => toDo.text === text);
+      return [
+        ...oldToDos.slice(0, targetIdx),
+        ...oldToDos.slice(targetIdx + 1),
+      ];
+    });
+  };
   return (
     <li>
       <span>{text}</span>
-      {category !== Categories.TO_DO && (
-        <button name={Categories.TO_DO} onClick={onClick}>
-          To Do
-        </button>
+      {Object.keys(categories).map(
+        (k, index) =>
+          category !== k && (
+            <button name={k} key={index} onClick={onClick}>
+              {categories[k as keyof typeof categories]}
+            </button>
+          )
       )}
-      {category !== Categories.DOING && (
-        <button name={Categories.DOING} onClick={onClick}>
-          Doing
-        </button>
-      )}
-      {category !== Categories.DONE && (
-        <button name={Categories.DONE} onClick={onClick}>
-          Done
-        </button>
-      )}
+      <button onClick={delToDo}>❌</button>
     </li>
   );
 }
