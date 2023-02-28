@@ -1,15 +1,51 @@
 import React from "react";
-import { IToDo } from "../states";
+import { useSetRecoilState } from "recoil";
+import { IToDo, toDoState } from "../states";
+
+/*
+[
+  {
+      "text": "5",
+      "id": 1677567147611,
+      "category": "TO DO"
+  },
+  {
+      "text": "4",
+      "id": 1677567146267,
+      "category": "TO DO"
+  },
+  {
+      "text": "3",
+      "id": 1677567145289,
+      "category": "TO DO"
+  },
+  {
+      "text": "2",
+      "id": 1677567144137,
+      "category": "TO DO"
+  },
+  {
+      "text": "1",
+      "id": 1677567142623,
+      "category": "TO DO"
+  }
+]
+*/
 
 function ToDo({ text, category, id }: IToDo) {
-  // const onClick = (newCategory: IToDo["category"]) => {
-  //   console.log("i wanna to " + newCategory);
-  // };
+  const setToDos = useSetRecoilState(toDoState);
   const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // console.log("i wanna to " + event.currentTarget.name);
     const {
       currentTarget: { name },
     } = event;
+    setToDos((oldToDos) => {
+      const targetIdx = oldToDos.findIndex((toDo) => toDo.id === id);
+      // console.log(targetIdx);
+      const oldToDo = oldToDos[targetIdx];
+      const newToDo = { text, id, category: name };
+      console.log(oldToDo, newToDo);
+      return oldToDos;
+    });
   };
   return (
     <li>
