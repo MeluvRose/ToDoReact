@@ -4,7 +4,6 @@ import { toDoState } from "../states";
 import ToDo from "./ToDo";
 
 function ToDoList() {
-  // const [toDos, setToDos] = useRecoilState(toDoState);
   const toDos = useRecoilValue(toDoState);
 
   console.log(toDos);
