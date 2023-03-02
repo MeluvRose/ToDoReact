@@ -1,4 +1,9 @@
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "react-beautiful-dnd";
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
@@ -105,8 +110,23 @@ const Card = styled.div`
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = (args: any) => {
-    console.log(args);
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    // console.log(destination?.index);
+    setToDos((oldToDos) => {
+      const toDosCopy = [...oldToDos];
+
+      // 1) Delete Item on source.index
+      console.log("Delete item on", source.index);
+      console.log(toDosCopy);
+      toDosCopy.splice(source.index, 1);
+      console.log("Delete item");
+      console.log(toDosCopy);
+      // 2) Put back the Item on the destination index
+      console.log(`Put Back ${draggableId} on ${destination?.index}`);
+      toDosCopy.splice(destination?.index as number, 0, draggableId);
+      console.log(toDosCopy);
+      return toDosCopy;
+    });
   };
   return (
     <>
@@ -118,7 +138,7 @@ function App() {
               {(magic) => (
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   {toDos.map((toDo, index) => (
-                    <Draggable draggableId={toDo} key={index} index={index}>
+                    <Draggable draggableId={toDo} key={toDo} index={index}>
                       {(magic) => (
                         <Card
                           ref={magic.innerRef}
