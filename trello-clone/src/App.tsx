@@ -1,6 +1,8 @@
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
+import { useRecoilState } from "recoil";
+import { toDoState } from "./states";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@300;400&display=swap');
@@ -101,10 +103,11 @@ const Card = styled.div`
   background-color: ${(props) => props.theme.cardColor};
 `;
 
-const toDos = ["a", "b", "c", "d", "e"];
-
 function App() {
-  const onDragEnd = () => {};
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  const onDragEnd = (args: any) => {
+    console.log(args);
+  };
   return (
     <>
       <GlobalStyle />
@@ -115,7 +118,7 @@ function App() {
               {(magic) => (
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   {toDos.map((toDo, index) => (
-                    <Draggable draggableId={toDo} index={index}>
+                    <Draggable draggableId={toDo} key={index} index={index}>
                       {(magic) => (
                         <Card
                           ref={magic.innerRef}
