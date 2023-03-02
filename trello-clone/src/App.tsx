@@ -8,6 +8,7 @@ import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { toDoState } from "./states";
+import DraggableCard from "./Components/DraggableCard";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@300;400&display=swap');
@@ -101,30 +102,14 @@ const Board = styled.div`
   background-color: ${(props) => props.theme.boardColor};
 `;
 
-const Card = styled.div`
-  padding: 10px 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.cardColor};
-`;
-
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    // console.log(destination?.index);
     setToDos((oldToDos) => {
       const toDosCopy = [...oldToDos];
 
-      // 1) Delete Item on source.index
-      console.log("Delete item on", source.index);
-      console.log(toDosCopy);
       toDosCopy.splice(source.index, 1);
-      console.log("Delete item");
-      console.log(toDosCopy);
-      // 2) Put back the Item on the destination index
-      console.log(`Put Back ${draggableId} on ${destination?.index}`);
       toDosCopy.splice(destination?.index as number, 0, draggableId);
-      console.log(toDosCopy);
       return toDosCopy;
     });
   };
@@ -138,17 +123,7 @@ function App() {
               {(magic) => (
                 <Board ref={magic.innerRef} {...magic.droppableProps}>
                   {toDos.map((toDo, index) => (
-                    <Draggable draggableId={toDo} key={toDo} index={index}>
-                      {(magic) => (
-                        <Card
-                          ref={magic.innerRef}
-                          {...magic.dragHandleProps}
-                          {...magic.draggableProps}
-                        >
-                          {toDo}
-                        </Card>
-                      )}
-                    </Draggable>
+                    <DraggableCard key={toDo} toDo={toDo} index={index} />
                   ))}
                   {magic.placeholder}
                 </Board>
