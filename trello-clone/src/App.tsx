@@ -75,8 +75,7 @@ a {
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 680px;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   margin: 0 auto;
   justify-content: center;
@@ -84,22 +83,30 @@ const Wrapper = styled.div`
 `;
 
 const Boards = styled.div`
-  display: grid;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
 `;
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    /*setToDos((oldToDos) => {
-      const toDosCopy = [...oldToDos];
+  const onDragEnd = (info: DropResult) => {
+    const { destination, draggableId, source } = info;
 
-      toDosCopy.splice(source.index, 1);
-      toDosCopy.splice(destination?.index as number, 0, draggableId);
-      return toDosCopy;
-    });*/
+    if (destination?.droppableId === source.droppableId) {
+      // same board movement.
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]];
+        boardCopy.splice(source.index, 1);
+        boardCopy.splice(destination?.index as number, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy,
+        };
+      });
+    }
   };
   return (
     <>
