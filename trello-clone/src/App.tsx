@@ -1,5 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@300;400&display=swap');
@@ -56,7 +57,11 @@ table {
 }
 
 body {
+  font-weight: 300;
   font-family: 'Source Serif Pro', serif;
+  background-color: ${(props) => props.theme.bgColor};
+  color: black;
+  line-height: 1.2;
 }
 
 a {
@@ -65,44 +70,69 @@ a {
 }
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  max-width: 480px;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Boards = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(1, 1fr);
+`;
+
+const Board = styled.div`
+  padding: 20px 10px;
+  padding-top: 30px;
+  border-radius: 5px;
+  min-height: 200px;
+  background-color: ${(props) => props.theme.boardColor};
+`;
+
+const Card = styled.div`
+  padding: 10px 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: ${(props) => props.theme.cardColor};
+`;
+
+const toDos = ["a", "b", "c", "d", "e"];
+
 function App() {
   const onDragEnd = () => {};
   return (
     <>
       <GlobalStyle />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div>
-          <Droppable droppableId="one">
-            {(magic) => (
-              <ul ref={magic.innerRef} {...magic.droppableProps}>
-                <Draggable draggableId="first" key={1} index={0}>
-                  {(magic) => (
-                    <li ref={magic.innerRef} {...magic.draggableProps}>
-                      <span {...magic.dragHandleProps}>👆</span>
-                      Hello
-                    </li>
-                  )}
-                </Draggable>
-                <Draggable draggableId="second" index={1}>
-                  {(magic) => (
-                    <li ref={magic.innerRef} {...magic.draggableProps}>
-                      <span {...magic.dragHandleProps}>👆</span>
-                      Hello 2
-                    </li>
-                  )}
-                </Draggable>
-                <Draggable draggableId="third" index={2}>
-                  {(magic) => (
-                    <li ref={magic.innerRef} {...magic.draggableProps}>
-                      <span {...magic.dragHandleProps}>👆</span>
-                      Hello 3
-                    </li>
-                  )}
-                </Draggable>
-              </ul>
-            )}
-          </Droppable>
-        </div>
+        <Wrapper>
+          <Boards>
+            <Droppable droppableId="one">
+              {(magic) => (
+                <Board ref={magic.innerRef} {...magic.droppableProps}>
+                  {toDos.map((toDo, index) => (
+                    <Draggable draggableId={toDo} index={index}>
+                      {(magic) => (
+                        <Card
+                          ref={magic.innerRef}
+                          {...magic.dragHandleProps}
+                          {...magic.draggableProps}
+                        >
+                          {toDo}
+                        </Card>
+                      )}
+                    </Draggable>
+                  ))}
+                  {magic.placeholder}
+                </Board>
+              )}
+            </Droppable>
+          </Boards>
+        </Wrapper>
       </DragDropContext>
     </>
   );

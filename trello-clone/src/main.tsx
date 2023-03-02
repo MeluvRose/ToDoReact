@@ -1,12 +1,17 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
 import App from "./App";
+import { ThemeProvider } from "styled-components";
+import { basicTheme } from "./theme";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+ReactDOM.render(
   // <React.StrictMode>
   <RecoilRoot>
-    <App />
-  </RecoilRoot>
+    <ThemeProvider theme={basicTheme}>
+      <App />
+    </ThemeProvider>
+  </RecoilRoot>,
   // </React.StrictMode>
+  document.getElementById("root")
 );
